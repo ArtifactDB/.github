@@ -103,7 +103,66 @@ Check out the [**calcite** R package](https://github.com/ArtifactDB/calcite-R) f
 
 ### Javascript
 
-🚧🚧🚧 **Under construction** 🚧🚧🚧
+The [Javascript client](https://github.com/ArtifactDB/artifactdb.js) provides useful functions for fetching files and metadata from an ArtifactDB API.
+For example, we can extract the count matrix of the `SingleCellExperiment`:
+
+```js
+import * as adb from "artifactdb";
+let calcite_url = "https://calcite.aaron-lun.workers.dev";
+
+// Get the metadata for the SingleCellExperiment:
+let meta = await adb.getFileMetadata(calcite_url, "test:my_first_sce@v1");
+
+// Find the count matrix:
+let assay = adb.extractByNameOrIndex(meta.summarized_experiment.assays, "counts");
+let assay_id = adb.packId("test", assay.resource.path, "v1");
+
+// Download the count matrix as an ArrayBuffer.
+let counts = await adb.getFile(calcite_url, assay_id);
+```
+
+Parsing of the downloaded file is left to the application.
+Here's an example using [**scran.js**](https://github.com/jkanche/scran.js):
+
+```js
+import * as scran from "scran.js";
+await scran.initialize();
+scran.writeFile("counts.h5", new Uint8Array(counts));
+let loaded = scran.initializeSparseMatrixFromHDF5("counts.h5", "sparse");
+let mat = loaded.matrix;
+```
+
+Uploading is similarly easy, provided we have the MD5 checksum and contents of each file we want to upload.
+Let's create a new version of the `test` project with some modification of the SCE's metadata.
+
+```js
+import * as hash from "hash-wasm";
+
+let existing = adb.getProjectMetadata(calcite_url, "test", { version: "v1" });
+let cloned = adb.prepareCloneUpload(existing, { stringify: false });
+let contents = cloned.metadata;
+let links = cloned.links;
+
+// Modifying the authors.
+let new_contributor = { name: "Darth Vader", email: "vader@empire.gov" };
+contents["my_first_sce/experiment.json"].maintainers.push(new_contributor);
+
+let checksums = {};
+for (const [k, v] of Object.entries(contents)) {
+    contents[k] = JSON.stringify(v);
+    checksums[k] = await hash.md5(contents[k]);
+}
+
+// Initializing the upload, creating links where possible.
+await adb.uploadProject(
+    calcite_url, 
+    "test-public", 
+    "my_test_version", 
+    checksums, 
+    contents, 
+    { initArgs: { dedupLinkPaths: links, expires: 1 } }
+);
+```
 
 ## Set up your own instance
 
@@ -157,9 +216,11 @@ For example, the [**calcite**](https://github.com/ArtifactDB/calcite-R) package 
 
 **Clients:**
 
-- [The **zircon** R package](https://github.com/ArtifactDB/zircon-R),
+- The [**zircon** R package](https://github.com/ArtifactDB/zircon-R),
   which implements a general-purpose interface to the **ArtifactDB** REST API.
-- [The **alabaster** set of R packages](https://github.com/ArtifactDB/alabaster.base),
+- The [**alabaster** set of R packages](https://github.com/ArtifactDB/alabaster.base),
   which save and load common Bioconductor object in language-agnostic file formats based on the Bioconductor Object Schemas.
-- [The **calcite** R package](https://github.com/ArtifactDB/calcite-R),
+- The [**calcite** R package](https://github.com/ArtifactDB/calcite-R),
   which wraps **zircon** and **alabaster** for interacting with the **calcite** REST API. 
+- The [**artifactdb** Javascript package](https://github.com/ArtifactDB/artifactdb.js),
+  which implements helpful functions for fetching and uploading to/from an **ArtifactDB** API.
