@@ -30,7 +30,8 @@ if you've got files, and you've got metadata, and you want to share them with ot
 ## Try it out!
 
 Let's play around with a test **ArtifactDB** instance to see what it can do.
-Specifically, we'll be using the **calcite** demonstration API, which enforces [ExperimentHub](https://bioconductor.org/packages/ExperimentHub)-like metadata standards.
+Specifically, we'll be using the **calcite** demonstration API, which stores common bioinformatics data structures
+(such as `SummarizedExperiment`s and `GenomicRanges`) in a language-agnostic format with [ExperimentHub](https://bioconductor.org/packages/ExperimentHub)-like metadata standards.
 Note that the demonstration API's functionality is limited because it runs off a bunch of free-tier cloud services,
 but it should be good enough to help you decide if the **ArtifactDB** framework is right for you.
 
@@ -203,7 +204,7 @@ For example, the [**calcite**](https://github.com/ArtifactDB/calcite-R) package 
 **Schemas:**
 
 - [Bioconductor Object Schemas](https://github.com/ArtifactDB/BiocObjectSchemas), 
-  which contain schemas for common Bioconductor classes such as the `GenomicRanges` and `SummarizedExperiment`.
+  which contain schemas for common Bioconductor classes.
 - [ExperimentHub-like Schemas](https://github.com/ArtifactDB/ExperimentHub-schemas), 
   which extend the Bioconductor Object Schemas to include [ExperimentHub](https://bioconductor.org/packages/ExperimentHub)-like metadata.
 
