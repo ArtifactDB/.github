@@ -186,8 +186,7 @@ This provides a light-weight **ArtifactDB** instance that runs off some free-tie
 which should be enough to experiment with the **ArtifactDB** concept with minimal investment.
 Check out the [**calcite**](https://github.com/ArtifactDB/calcite-worker) API for an example of how to customize **gypsum** to a different set of schemas.
 
-If you want to get serious about **ArtifactDB**, try the full-featured **ArtifactDB** backend based on the Amazon stack.
-We're currently in the process of open-sourcing this; details coming soon!
+If you want to get serious about **ArtifactDB**, try the full-featured **ArtifactDB** backend. The architecture is mostly based on Kubernetes with storage and states delegated to cloud services, currently AWS. A collection of Terraform modules can be found in the repository [**artifactdb-infra**](https://github.com/ArtifactDB/artifactdb-infra), providing the foundations for the ArtifactDB platform infrastructure. [**artifactdb-demo**](https://github.com/ArtifactDB/artifactdb-demo) repository shows an example of deployment using these modules, based on Terragrunt code.
 
 ### Customizing the clients
 
