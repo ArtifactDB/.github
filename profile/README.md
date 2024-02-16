@@ -27,5 +27,8 @@ This is equivalent to **alabaster** for Python and is based heavily on the class
 The [**gypsum** worker](https://github.com/ArtifactDB/gypsum-worker) implements a REST API for storing and serving artifacts via the Cloudflare stack.
 This uses R2 for storage and Workers to handle authenticated uploads via flexible permission schemes.
 
+The [Gobbler](https://github.com/ArtifactDB/gobbler) manages artifacts across users on a shared filesystem such as those used in HPC clusters.
+This is effectively an on-premise version of **gypsum** that is simpler and more efficient for local applications. 
+
 The [**takane** library](https://github.com/ArtifactDB/takane) contains language-agnostic specifications for all Bioconductor object types.
 These are enforced by validator functions written in C++, which are used by both **alabaster** and **dolomite** to verify compliance.
